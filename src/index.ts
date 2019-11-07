@@ -22,4 +22,4 @@ createConnection(connectionOptions)
   .then(() => {
     app.start(appOptions, handleAppListening);
   })
-  .catch((err) => console.info(`🤢  oups something going wrong ${err}`));
+  .catch((err) => console.info(`🤢 oups something going wrong ${err}`));

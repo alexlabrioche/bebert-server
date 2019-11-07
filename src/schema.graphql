@@ -29,6 +29,8 @@ type Place {
 type Ride {
   id: Int!
   status: String!
+  driver: User!
+  passenger: User!
   pickUpAddress: String!
   pickUpLat: Float!
   pickUpLng: Float!
@@ -60,8 +62,12 @@ type User {
   lastLng: Float
   lastLat: Float
   lastOrientation: Float
+  fbId: String
   chat: Chat
+  ridesAsPassenger: [Ride]
+  ridesAsDriver: [Ride]
   messages: [Message]
+  verifications: [Verification]
   createdAt: String!
   updatedAt: String
 }
@@ -72,6 +78,7 @@ type Query {
 
 type Verification {
   id: Int!
+  user: User!
   target: String!
   payload: String!
   key: String!
