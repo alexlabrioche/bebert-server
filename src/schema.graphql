@@ -44,14 +44,66 @@ type Ride {
   updatedAt: String
 }
 
+type CompleteEmailVerificationResponse {
+  ok: Boolean!
+  error: String
+}
+
+type Mutation {
+  CompleteEmailVerification(key: String!): CompleteEmailVerificationResponse!
+  CompletePhoneVerification(phoneNumber: String!, key: String!): CompletePhoneVerificationResponse!
+  EmailSignIn(email: String!, password: String!): EmailSignInResponse!
+  EmailSignUp(firstName: String!, lastName: String!, phoneNumber: String!, email: String!, password: String!, age: Int!, profilePhoto: String!): EmailSignUpResponse
+  FacebookConnect(firstName: String!, lastName: String!, email: String, fbId: String!): FacebookConnectResponse!
+  ReportUserMovement(orientation: Float, lat: Float, lng: Float): ReportUserMovementResponse!
+  RequestEmailVerification: RequestEmailVerificationResponse!
+  StartPhoneVerification(phoneNumber: String!): StartPhoneVerificationResponse!
+  ToggleDrivingMode: ToggleDrivingModeResponse!
+  updateMyProfile(firstName: String, lastName: String, profilePhoto: String, password: String, age: Int): updateMyProfileResponse!
+}
+
+type CompletePhoneVerificationResponse {
+  ok: Boolean!
+  error: String
+  token: String
+}
+
+type EmailSignInResponse {
+  ok: Boolean!
+  error: String
+  token: String
+}
+
+type EmailSignUpResponse {
+  ok: Boolean!
+  error: String
+  token: String
+}
+
 type FacebookConnectResponse {
   ok: Boolean!
   token: String
   error: String
 }
 
-type Mutation {
-  FacebookConnect(firstName: String!, lastName: String!, email: String, fbId: String!): FacebookConnectResponse!
+type GetMyProfileResponse {
+  ok: Boolean!
+  error: String
+  user: User
+}
+
+type Query {
+  GetMyProfile: GetMyProfileResponse!
+}
+
+type ReportUserMovementResponse {
+  ok: Boolean!
+  error: String
+}
+
+type RequestEmailVerificationResponse {
+  ok: Boolean!
+  error: String
 }
 
 type User {
@@ -77,22 +129,31 @@ type User {
   ridesAsPassenger: [Ride]
   ridesAsDriver: [Ride]
   messages: [Message]
-  verifications: [Verification]
   createdAt: String!
   updatedAt: String
 }
 
-type Query {
-  user: User
+type StartPhoneVerificationResponse {
+  ok: Boolean!
+  error: String
+}
+
+type ToggleDrivingModeResponse {
+  ok: Boolean!
+  error: String
+}
+
+type updateMyProfileResponse {
+  ok: Boolean!
+  error: String
 }
 
 type Verification {
   id: Int!
-  user: User!
   target: String!
   payload: String!
   key: String!
-  used: Boolean!
+  verified: Boolean!
   createdAt: String!
   updatedAt: String
 }

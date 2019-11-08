@@ -21,11 +21,6 @@ type User {
   ridesAsPassenger: [Ride]
   ridesAsDriver: [Ride]
   messages: [Message]
-  verifications: [Verification]
   createdAt: String!
   updatedAt: String
-}
-
-type Query {
-  user: User
 }

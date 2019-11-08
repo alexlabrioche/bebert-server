@@ -4,17 +4,22 @@
 
 ##### public Resolvers
 
-- [ ] Sign Up / Sign In avec Facebook
-- [ ] Sign In avec Email
-- [ ] Commencer la vérification de mon numéro de téléphone
-- [ ] Valider la vérification de mon numéro de téléphone
-- [ ] Sign Up avec Email
+- [x] Sign Up / Sign In avec Facebook
+- [x] Sign In avec Email
+- [x] Commencer la vérification de mon numéro de téléphone
+- [x] Valider la vérification de mon numéro de téléphone
+- [x] Sign Up avec Email
+
+##### authentification
+
+- [x] Generate token
+- [x] Verify token
 
 ##### private Resolvers
 
-- [ ] Vérifier l'email
-- [ ] Voir mon profil
-- [ ] Mettre à jour mon profil
+- [x] Vérifier l'email
+- [x] Voir mon profil
+- [x] Mettre à jour mon profil
 - [ ] Activer mode Conducteur
 - [ ] Report Location/Orientation
 - [ ] Ajouter une Place

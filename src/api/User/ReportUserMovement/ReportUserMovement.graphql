@@ -1,0 +1,7 @@
+type ReportUserMovementResponse {
+  ok: Boolean!
+  error: String
+}
+type Mutation {
+  ReportUserMovement(orientation: Float, lat: Float, lng: Float): ReportUserMovementResponse!
+}
