@@ -15,13 +15,57 @@ type Message {
   updatedAt: String
 }
 
+type AddPlaceResponse {
+  ok: Boolean!
+  error: String
+}
+
+type Mutation {
+  AddPlace(name: String!, lat: Float!, lng: Float!, address: String!, isFav: Boolean!): AddPlaceResponse!
+  DeletePlace(placeId: Int!): DeletePlaceResponse!
+  EditPlace(placeId: Int!, name: String, isFav: Boolean): EditPlaceResponse!
+  CompleteEmailVerification(key: String!): CompleteEmailVerificationResponse!
+  CompletePhoneVerification(phoneNumber: String!, key: String!): CompletePhoneVerificationResponse!
+  EmailSignIn(email: String!, password: String!): EmailSignInResponse!
+  EmailSignUp(firstName: String!, lastName: String!, phoneNumber: String!, email: String!, password: String!, age: Int!, profilePhoto: String!): EmailSignUpResponse
+  FacebookConnect(firstName: String!, lastName: String!, email: String, fbId: String!): FacebookConnectResponse!
+  ReportUserMovement(orientation: Float, lat: Float, lng: Float): ReportUserMovementResponse!
+  RequestEmailVerification: RequestEmailVerificationResponse!
+  StartPhoneVerification(phoneNumber: String!): StartPhoneVerificationResponse!
+  ToggleDrivingMode: ToggleDrivingModeResponse!
+  updateMyProfile(firstName: String, lastName: String, profilePhoto: String, password: String, age: Int): updateMyProfileResponse!
+}
+
+type DeletePlaceResponse {
+  ok: Boolean!
+  error: String
+}
+
+type EditPlaceResponse {
+  ok: Boolean!
+  error: String
+}
+
+type GetMyPlacesResponse {
+  ok: Boolean!
+  error: String
+  places: [Place]
+}
+
+type Query {
+  GetMyPlaces: GetMyPlacesResponse!
+  GetMyProfile: GetMyProfileResponse!
+}
+
 type Place {
   id: Int!
   name: String!
-  lat: String!
-  lng: String!
+  lat: Float!
+  lng: Float!
   address: String!
   isFav: Boolean!
+  userId: Int!
+  user: User!
   createdAt: String!
   updatedAt: String
 }
@@ -47,19 +91,6 @@ type Ride {
 type CompleteEmailVerificationResponse {
   ok: Boolean!
   error: String
-}
-
-type Mutation {
-  CompleteEmailVerification(key: String!): CompleteEmailVerificationResponse!
-  CompletePhoneVerification(phoneNumber: String!, key: String!): CompletePhoneVerificationResponse!
-  EmailSignIn(email: String!, password: String!): EmailSignInResponse!
-  EmailSignUp(firstName: String!, lastName: String!, phoneNumber: String!, email: String!, password: String!, age: Int!, profilePhoto: String!): EmailSignUpResponse
-  FacebookConnect(firstName: String!, lastName: String!, email: String, fbId: String!): FacebookConnectResponse!
-  ReportUserMovement(orientation: Float, lat: Float, lng: Float): ReportUserMovementResponse!
-  RequestEmailVerification: RequestEmailVerificationResponse!
-  StartPhoneVerification(phoneNumber: String!): StartPhoneVerificationResponse!
-  ToggleDrivingMode: ToggleDrivingModeResponse!
-  updateMyProfile(firstName: String, lastName: String, profilePhoto: String, password: String, age: Int): updateMyProfileResponse!
 }
 
 type CompletePhoneVerificationResponse {
@@ -92,10 +123,6 @@ type GetMyProfileResponse {
   user: User
 }
 
-type Query {
-  GetMyProfile: GetMyProfileResponse!
-}
-
 type ReportUserMovementResponse {
   ok: Boolean!
   error: String
@@ -116,7 +143,7 @@ type User {
   password: String
   age: Int
   phoneNumber: String
-  verifiedPhoneNumber: String!
+  verifiedPhoneNumber: Boolean!
   profilePhoto: String
   isDriving: Boolean!
   isRiding: Boolean!
@@ -126,6 +153,7 @@ type User {
   lastOrientation: Float
   fbId: String
   chat: Chat
+  places: [Place]
   ridesAsPassenger: [Ride]
   ridesAsDriver: [Ride]
   messages: [Message]

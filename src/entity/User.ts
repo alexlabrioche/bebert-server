@@ -15,6 +15,7 @@ import {
 import Chat from './Chat';
 import Message from './Message';
 import Ride from './Ride';
+import Place from './Place';
 
 const BCRYPT_SALT_ROUNDS = 10;
 
@@ -65,6 +66,9 @@ class User extends BaseEntity {
 
   @Column({ type: 'double precision', default: 0 })
   lastLat: number;
+
+  @OneToMany((type) => Place, (place) => place.user)
+  places: Place[];
 
   @Column({ type: 'double precision', default: 0 })
   lastOrientation: number;
