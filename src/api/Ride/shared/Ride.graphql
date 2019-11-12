@@ -1,7 +1,9 @@
 type Ride {
   id: Int!
   status: String!
+  driverId: Int
   driver: User!
+  passengerId: Int!
   passenger: User!
   pickUpAddress: String!
   pickUpLat: Float!

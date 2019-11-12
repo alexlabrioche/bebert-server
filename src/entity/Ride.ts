@@ -7,20 +7,25 @@ import {
   UpdateDateColumn,
   ManyToOne,
 } from 'typeorm';
-import { rideStatus } from 'src/types/types';
+import { rideStatus } from '../types/types';
 import User from './User';
 
 const ACCEPTED: string = 'ACCEPTED';
 const FINISHED: string = 'FINISHED';
 const CANCELED: string = 'CANCELED';
 const ONROUTE: string = 'ONROUTE';
+const REQUESTING: string = 'REQUESTING';
 
 @Entity()
 class Ride extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'text', enum: [ACCEPTED, FINISHED, CANCELED, ONROUTE] })
+  @Column({
+    type: 'text',
+    enum: [ACCEPTED, FINISHED, CANCELED, ONROUTE, REQUESTING],
+    default: REQUESTING,
+  })
   status: rideStatus;
 
   @Column({ type: 'text' })
@@ -50,10 +55,16 @@ class Ride extends BaseEntity {
   @Column({ type: 'text' })
   duration: string;
 
+  @Column({ nullable: true })
+  passengerId: number;
+
+  @Column({ nullable: true })
+  driverId: number;
+
   @ManyToOne((type) => User, (user) => user.ridesAsPassenger)
   passenger: User;
 
-  @ManyToOne((type) => User, (user) => user.ridesAsDriver)
+  @ManyToOne((type) => User, (user) => user.ridesAsDriver, { nullable: true })
   driver: User;
 
   @CreateDateColumn()

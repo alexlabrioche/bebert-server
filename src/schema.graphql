@@ -1,7 +1,25 @@
+type GetChatResponse {
+  ok: Boolean!
+  error: String
+  chat: Chat
+}
+
+type Query {
+  GetChat(chatId: Int!): GetChatResponse!
+  GetMyPlaces: GetMyPlacesResponse!
+  GetNearbyRide: GetNearbyRideResponse!
+  GetRide(rideId: Int!): GetRideResponse!
+  GetMyProfile: GetMyProfileResponse!
+  GetNearbyDrivers: GetNearbyDriversResponse!
+}
+
 type Chat {
   id: Int!
-  messages: [Message]!
-  participants: [User]!
+  messages: [Message]
+  driver: User!
+  passenger: User!
+  driverId: Int
+  passengerId: Int!
   createdAt: String!
   updatedAt: String
 }
@@ -24,13 +42,15 @@ type Mutation {
   AddPlace(name: String!, lat: Float!, lng: Float!, address: String!, isFav: Boolean!): AddPlaceResponse!
   DeletePlace(placeId: Int!): DeletePlaceResponse!
   EditPlace(placeId: Int!, name: String, isFav: Boolean): EditPlaceResponse!
+  UpdateRideStatus(rideId: Int!, status: StatusOptions!): UpdateRideStatusResponse!
   CompleteEmailVerification(key: String!): CompleteEmailVerificationResponse!
   CompletePhoneVerification(phoneNumber: String!, key: String!): CompletePhoneVerificationResponse!
   EmailSignIn(email: String!, password: String!): EmailSignInResponse!
   EmailSignUp(firstName: String!, lastName: String!, phoneNumber: String!, email: String!, password: String!, age: Int!, profilePhoto: String!): EmailSignUpResponse
   FacebookConnect(firstName: String!, lastName: String!, email: String, fbId: String!): FacebookConnectResponse!
-  ReportUserMovement(orientation: Float, lat: Float, lng: Float): ReportUserMovementResponse!
+  ReportUserMovement(lastOrientation: Float, lastLat: Float, lastLng: Float): ReportUserMovementResponse!
   RequestEmailVerification: RequestEmailVerificationResponse!
+  RequestRide(pickUpAddress: String!, pickUpLat: Float!, pickUpLng: Float!, dropOffAddress: String!, dropOffLat: Float!, dropOffLng: Float!, price: Float!, distance: String!, duration: String!): RequestRideResponse!
   StartPhoneVerification(phoneNumber: String!): StartPhoneVerificationResponse!
   ToggleDrivingMode: ToggleDrivingModeResponse!
   updateMyProfile(firstName: String, lastName: String, profilePhoto: String, password: String, age: Int): updateMyProfileResponse!
@@ -52,12 +72,6 @@ type GetMyPlacesResponse {
   places: [Place]
 }
 
-type Query {
-  GetMyPlaces: GetMyPlacesResponse!
-  GetMyProfile: GetMyProfileResponse!
-  GetNearbyDrivers: GetNearbyDriversResponse!
-}
-
 type Place {
   id: Int!
   name: String!
@@ -71,10 +85,30 @@ type Place {
   updatedAt: String
 }
 
+type GetNearbyRideResponse {
+  ok: Boolean!
+  error: String
+  ride: Ride
+}
+
+type GetRideResponse {
+  ok: Boolean!
+  error: String
+  ride: Ride
+}
+
+type Subscription {
+  NearbyRideSubscription: Ride
+  RideStatusSubscription: Ride
+  DriversSubscription: User!
+}
+
 type Ride {
   id: Int!
   status: String!
+  driverId: Int
   driver: User!
+  passengerId: Int!
   passenger: User!
   pickUpAddress: String!
   pickUpLat: Float!
@@ -87,6 +121,19 @@ type Ride {
   duration: String!
   createdAt: String!
   updatedAt: String
+}
+
+type UpdateRideStatusResponse {
+  ok: Boolean!
+  error: String
+}
+
+enum StatusOptions {
+  ACCEPTED
+  FINISHED
+  CANCELED
+  ONROUTE
+  REQUESTING
 }
 
 type CompleteEmailVerificationResponse {
@@ -140,6 +187,12 @@ type RequestEmailVerificationResponse {
   error: String
 }
 
+type RequestRideResponse {
+  ok: Boolean!
+  error: String
+  ride: Ride
+}
+
 type User {
   id: Int!
   firstName: String!
@@ -159,10 +212,11 @@ type User {
   lastLat: Float
   lastOrientation: Float
   fbId: String
-  chat: Chat
   places: [Place]
   ridesAsPassenger: [Ride]
   ridesAsDriver: [Ride]
+  chatsAsPassenger: [Chat]
+  chatsAsDriver: [Chat]
   messages: [Message]
   createdAt: String!
   updatedAt: String
