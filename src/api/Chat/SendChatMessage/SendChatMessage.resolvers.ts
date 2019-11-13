@@ -1,48 +1,61 @@
 import { Resolvers } from "../../../types/resolvers";
 import authResolver from "../../../utils/authResolver";
-import { GetChatResponse, GetChatQueryArgs } from "../../../types/graph";
+import {
+  SendChatMessageResponse,
+  SendChatMessageMutationArgs
+} from "../../../types/graph";
+import User from "../../../entity/User";
+import Message from "../../../entity/Message";
 import Chat from "../../../entity/Chat";
 
 const resolvers: Resolvers = {
-  Query: {
-    GetChat: authResolver(
-      async (_, args: GetChatQueryArgs, { req }): Promise<GetChatResponse> => {
-        const logguedUser = req.user;
+  Mutation: {
+    SendChatMessage: authResolver(
+      async (
+        _,
+        args: SendChatMessageMutationArgs,
+        { req, pubSub }
+      ): Promise<SendChatMessageResponse> => {
+        const logguedUser: User = req.user;
         try {
-          const chat = await Chat.findOne(
-            { id: args.chatId },
-            { relations: ["messages"] }
-          );
-
+          const chat = await Chat.findOne({ id: args.chatId });
           if (chat) {
             if (
               chat.passengerId === logguedUser.id ||
               chat.driverId === logguedUser.id
             ) {
+              const message = await Message.create({
+                text: args.text,
+                chat,
+                user: logguedUser
+              }).save();
+              pubSub.publish("newChatMessage", {
+                MessageSubscription: message
+              });
               return {
                 ok: true,
                 error: null,
-                chat
+                message
               };
             } else {
               return {
                 ok: false,
                 error: "Non autorisé",
-                chat: null
+                message: null
               };
             }
           } else {
             return {
               ok: false,
               error: "Chat non trouvé",
-              chat: null
+              message: null
             };
           }
         } catch (error) {
           return {
             ok: false,
             error: error.message,
-            chat: null
+            message: null
           };
         }
       }

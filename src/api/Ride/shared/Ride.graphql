@@ -12,6 +12,8 @@ type Ride {
   dropOffLat: Float!
   dropOffLng: Float!
   price: Float!
+  chat: Chat
+  chatId: Int
   distance: String!
   duration: String!
   createdAt: String!

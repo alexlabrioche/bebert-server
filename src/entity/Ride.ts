@@ -6,15 +6,18 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-} from 'typeorm';
-import { rideStatus } from '../types/types';
-import User from './User';
+  OneToOne,
+  JoinColumn
+} from "typeorm";
+import { rideStatus } from "../types/types";
+import User from "./User";
+import Chat from "./Chat";
 
-const ACCEPTED: string = 'ACCEPTED';
-const FINISHED: string = 'FINISHED';
-const CANCELED: string = 'CANCELED';
-const ONROUTE: string = 'ONROUTE';
-const REQUESTING: string = 'REQUESTING';
+const ACCEPTED: string = "ACCEPTED";
+const FINISHED: string = "FINISHED";
+const CANCELED: string = "CANCELED";
+const ONROUTE: string = "ONROUTE";
+const REQUESTING: string = "REQUESTING";
 
 @Entity()
 class Ride extends BaseEntity {
@@ -22,49 +25,67 @@ class Ride extends BaseEntity {
   id: number;
 
   @Column({
-    type: 'text',
+    type: "text",
     enum: [ACCEPTED, FINISHED, CANCELED, ONROUTE, REQUESTING],
-    default: REQUESTING,
+    default: REQUESTING
   })
   status: rideStatus;
 
-  @Column({ type: 'text' })
+  @Column({ type: "text" })
   pickUpAddress: string;
 
-  @Column({ type: 'double precision', default: 0 })
+  @Column({ type: "double precision", default: 0 })
   pickUpLat: number;
 
-  @Column({ type: 'double precision', default: 0 })
+  @Column({ type: "double precision", default: 0 })
   pickUpLng: number;
 
-  @Column({ type: 'text' })
+  @Column({ type: "text" })
   dropOffAddress: string;
 
-  @Column({ type: 'double precision', default: 0 })
+  @Column({ type: "double precision", default: 0 })
   dropOffLat: number;
 
-  @Column({ type: 'double precision', default: 0 })
+  @Column({ type: "double precision", default: 0 })
   dropOffLng: number;
 
-  @Column({ type: 'double precision', default: 0 })
+  @Column({ type: "double precision", default: 0 })
   price: number;
 
-  @Column({ type: 'text' })
+  @Column({ type: "text" })
   distance: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: "text" })
   duration: string;
 
   @Column({ nullable: true })
   passengerId: number;
 
   @Column({ nullable: true })
+  chatId: number;
+
+  @Column({ nullable: true })
   driverId: number;
 
-  @ManyToOne((type) => User, (user) => user.ridesAsPassenger)
+  @ManyToOne(
+    type => User,
+    user => user.ridesAsPassenger
+  )
   passenger: User;
 
-  @ManyToOne((type) => User, (user) => user.ridesAsDriver, { nullable: true })
+  @OneToOne(
+    type => Chat,
+    chat => chat.ride,
+    { nullable: true }
+  )
+  @JoinColumn()
+  chat: Chat;
+
+  @ManyToOne(
+    type => User,
+    user => user.ridesAsDriver,
+    { nullable: true }
+  )
   driver: User;
 
   @CreateDateColumn()
